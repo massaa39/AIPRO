@@ -1,0 +1,3766 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アイプロ | プロフェッショナルAI企画書作成ツール</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #718aff;
+      --primary-dark: #3a56d4;
+      --secondary: #2ec4b6;
+      --secondary-light: #40e0d0;
+      --accent: #ff9f1c;
+      --accent-light: #ffbf69;
+      --success: #10b981;
+      --warning: #ffc300;
+      --error: #e63946;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #9ca3af;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-tertiary: #f3f4f6;
+      --bg-highlight: #eef2ff;
+      --bg-highlight-secondary: #ecfdf5;
+      --border-color: #e5e7eb;
+      --border-focus: #a5b4fc;
+      --radius: 16px;
+      --radius-sm: 8px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+      --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-secondary);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* ヘッダー */
+    .header {
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+    
+    .logo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--gradient-primary);
+      border-radius: 12px;
+      margin-right: 0.75rem;
+      color: white;
+      font-size: 1.25rem;
+      transition: all var(--transition-bounce);
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+    }
+    
+    .logo:hover .logo-icon {
+      transform: scale(1.05) rotate(5deg);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-header {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all var(--transition);
+      margin-left: 0.75rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-header i {
+      margin-right: 0.5rem;
+    }
+    
+    .btn-header-default {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+    
+    .btn-header-default:hover {
+      background-color: var(--bg-highlight);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    
+    .btn-header-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-header-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    /* メインコンテナ */
+    .main-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    /* ウェルカム画面 */
+    .welcome-container {
+      text-align: center;
+      margin: 2.5rem auto;
+      position: relative;
+      max-width: 1200px;
+      width: 100%;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .welcome-header {
+      margin-bottom: 3rem;
+    }
+    
+    .welcome-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      text-shadow: 0 1px 1px rgba(67, 97, 238, 0.1);
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .welcome-modes {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      perspective: 1000px;
+    }
+    
+    @keyframes cardHover {
+      0% { transform: translateY(0) rotateY(0); }
+      100% { transform: translateY(-10px) rotateY(5deg); }
+    }
+    
+    .welcome-card {
+      flex: 1;
+      max-width: 400px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background-color: var(--bg-primary);
+      box-shadow: var(--shadow);
+      transition: all var(--transition-bounce);
+      position: relative;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transform: translateZ(0);
+      transform-style: preserve-3d;
+    }
+    
+    .welcome-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-8px) translateZ(20px);
+    }
+    
+    .welcome-card-active {
+      border-color: var(--primary);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.25);
+    }
+    
+    .card-header {
+      padding: 1.5rem;
+      color: white;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-header-chat {
+      background: var(--gradient-primary);
+    }
+    
+    .card-header-form {
+      background: var(--gradient-secondary);
+    }
+    
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    
+    .welcome-card:hover .card-header::before {
+      opacity: 1;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.1; }
+      50% { transform: scale(1.05); opacity: 0.2; }
+      100% { transform: scale(1); opacity: 0.1; }
+    }
+    
+    .card-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      transition: all var(--transition);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .welcome-card:hover .card-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+      text-align: left;
+    }
+    
+    .card-features {
+      padding: 0;
+      margin: 0 0 1.5rem;
+      list-style: none;
+    }
+    
+    .card-feature {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+    }
+    
+    .welcome-card:hover .card-feature {
+      background-color: var(--bg-tertiary);
+    }
+    
+    .card-feature i {
+      color: var(--success);
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+      transform: translateY(2px);
+    }
+    
+    .card-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.875rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      transition: all var(--transition);
+      width: 100%;
+    }
+    
+    .btn-start-chat {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-start-chat:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-start-form {
+      background: var(--gradient-secondary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(46, 196, 182, 0.2);
+    }
+    
+    .btn-start-form:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(46, 196, 182, 0.3);
+    }
+    
+    .welcome-benefits {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .benefit-item {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      padding: 1.5rem;
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: all var(--transition);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      border: 1px solid var(--border-color);
+    }
+    
+    .benefit-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-light);
+    }
+    
+    .benefit-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: white;
+      transform: rotate(-5deg);
+      transition: all var(--transition);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .benefit-item:hover .benefit-icon {
+      transform: rotate(0deg) scale(1.1);
+    }
+    
+    .benefit-icon-1 {
+      background: var(--gradient-primary);
+    }
+    
+    .benefit-icon-2 {
+      background: var(--gradient-secondary);
+    }
+    
+    .benefit-icon-3 {
+      background: var(--gradient-accent);
+    }
+    
+    .benefit-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .benefit-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* チャットモード UI */
+    .chat-container {
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .chat-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .chat-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-title i {
+      color: var(--primary);
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+    }
+    
+    .chat-progress {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      background-color: var(--bg-highlight);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .chat-progress::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      transition: all 2s linear;
+    }
+    
+    .chat-progress.updating::before {
+      width: 100%;
+    }
+    
+    .chat-progress i {
+      color: var(--primary);
+      margin-right: 0.5rem;
+    }
+    
+    .chat-interface {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 220px);
+      min-height: 600px;
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: box-shadow var(--transition);
+    }
+    
+    .chat-interface:focus-within {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-light);
+    }
+    
+    .chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-secondary);
+      scroll-behavior: smooth;
+    }
+    
+    .message {
+      margin-bottom: 1.25rem;
+      max-width: 80%;
+      animation: fadeInMessage 0.3s ease-out;
+      position: relative;
+    }
+    
+    @keyframes fadeInMessage {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .message-ai {
+      margin-right: auto;
+      background-color: var(--bg-primary);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .message-user {
+      margin-left: auto;
+      background: var(--gradient-primary);
+      color: white;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .message-content {
+      font-size: 0.875rem;
+    }
+    
+    .message-content p {
+      margin-bottom: 0.75rem;
+    }
+    
+    .message-content p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .message-content ul, 
+    .message-content ol {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+    }
+    
+    .message-content li {
+      margin-bottom: 0.25rem;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    
+    .message-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.75rem;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .avatar-ai {
+      background: var(--gradient-primary);
+      color: white;
+    }
+    
+    .avatar-user {
+      background-color: var(--bg-highlight);
+      color: var(--primary);
+    }
+    
+    .message-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .message-time {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-left: 0.5rem;
+    }
+    
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .suggestion {
+      font-size: 0.75rem;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 0.875rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .suggestion:hover {
+      background-color: var(--primary-light);
+      color: white;
+      border-color: var(--primary-light);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 3px 8px rgba(67, 97, 238, 0.2);
+    }
+    
+    .chat-input-container {
+      padding: 1rem;
+      border-top: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      transition: all var(--transition);
+    }
+    
+    .chat-input-wrapper {
+      flex-grow: 1;
+      position: relative;
+    }
+    
+    .chat-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      transition: all var(--transition);
+      background-color: var(--bg-primary);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+    }
+    
+    .chat-submit {
+      margin-left: 0.75rem;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+    }
+    
+    .chat-submit:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+    }
+    
+    .chat-submit:active {
+      transform: translateY(0) scale(0.98);
+    }
+    
+    .chat-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    
+    /* フォームモード UI */
+    .form-container {
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .form-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .form-title i {
+      color: var(--secondary);
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+    }
+    
+    .progress-container {
+      margin-bottom: 1.5rem;
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: all var(--transition);
+    }
+    
+    .progress-container:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--secondary-light);
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    
+    .progress-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .progress-title i {
+      margin-right: 0.5rem;
+      color: var(--secondary);
+    }
+    
+    .progress-percentage {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--secondary);
+      background-color: var(--bg-highlight-secondary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    
+    .progress-percentage.updating {
+      transform: scale(1.05);
+      box-shadow: 0 3px 8px rgba(46, 196, 182, 0.2);
+    }
+    
+    .progress-bar-container {
+      height: 8px;
+      background-color: var(--bg-tertiary);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: var(--gradient-secondary);
+      border-radius: 9999px;
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: progressShimmer 2s infinite;
+    }
+    
+    @keyframes progressShimmer {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(200%); }
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+    
+    .progress-line {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--border-color);
+      z-index: 0;
+    }
+    
+    .progress-step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding-top: 1.5rem;
+      flex: 1;
+    }
+    
+    .progress-step-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all var(--transition);
+      box-shadow: 0 0 0 5px var(--bg-primary);
+    }
+    
+    .progress-step.active .progress-step-dot {
+      background-color: var(--secondary);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 5px var(--bg-primary), 0 0 0 8px rgba(46, 196, 182, 0.2);
+      transform: translateX(-50%) scale(1.1);
+    }
+    
+    .progress-step.completed .progress-step-dot {
+      background-color: var(--success);
+      border-color: var(--success);
+      box-shadow: 0 0 0 5px var(--bg-primary), 0 0 0 8px rgba(16, 185, 129, 0.1);
+    }
+    
+    .progress-step-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      transition: all var(--transition);
+    }
+    
+    .progress-step.active .progress-step-label {
+      color: var(--secondary);
+      font-weight: 600;
+      transform: scale(1.05);
+    }
+    
+    .progress-step.completed .progress-step-label {
+      color: var(--success);
+      font-weight: 600;
+    }
+    
+    .form-body {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: all var(--transition);
+    }
+    
+    .form-body:focus-within {
+      box-shadow: var(--shadow-md);
+      border-color: var(--secondary-light);
+    }
+    
+    .form-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+    }
+    
+    .form-tab {
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .form-tab i {
+      margin-right: 0.5rem;
+      font-size: 1rem;
+      transition: all var(--transition);
+    }
+    
+    .form-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-secondary);
+      opacity: 0;
+      transition: opacity var(--transition);
+      z-index: -1;
+    }
+    
+    .form-tab.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+      background-color: var(--bg-highlight-secondary);
+      font-weight: 600;
+    }
+    
+    .form-tab.active i {
+      transform: scale(1.1);
+    }
+    
+    .form-tab:hover:not(.active) {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    
+    .form-tab:active:not(.active) {
+      background-color: var(--bg-highlight-secondary);
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 1.5rem;
+      animation: fadeInTab 0.5s ease-out;
+      perspective: 1000px;
+    }
+    
+    @keyframes fadeInTab {
+      0% { opacity: 0; transform: translateY(10px) rotateX(-5deg); }
+      100% { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 1.75rem;
+      position: relative;
+      transition: all var(--transition);
+    }
+    
+    .form-group:hover {
+      transform: translateZ(0);
+    }
+    
+    .form-group:focus-within {
+      transform: translateY(-2px);
+    }
+    
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    
+    .form-group:focus-within .form-label {
+      color: var(--secondary);
+      transform: translateX(2px);
+    }
+    
+    .form-label i {
+      margin-left: 0.375rem;
+      color: var(--text-tertiary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+    
+    .form-label i:hover {
+      color: var(--secondary);
+      transform: scale(1.1);
+    }
+    
+    .form-label-required {
+      position: relative;
+    }
+    
+    .form-label-required::after {
+      content: "*";
+      color: var(--error);
+      margin-left: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      transition: all var(--transition);
+      background-color: var(--bg-primary);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(46, 196, 182, 0.15);
+    }
+    
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .form-helper {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .form-helper-icon {
+      color: var(--secondary);
+      margin-right: 0.25rem;
+    }
+    
+    .input-sync-animation {
+      height: 3px;
+      background-color: var(--success);
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
+      z-index: 2;
+    }
+    
+    .input-sync-animation.active {
+      width: 100%;
+    }
+    
+    .character-count {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+      text-align: right;
+      transition: all var(--transition);
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+    }
+    
+    .character-count.warning {
+      color: var(--warning);
+      background-color: rgba(255, 195, 0, 0.1);
+      font-weight: 500;
+    }
+    
+    .character-count.danger {
+      color: var(--error);
+      background-color: rgba(230, 57, 70, 0.1);
+      font-weight: 500;
+    }
+    
+    .error-message {
+      color: var(--error);
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      display: none;
+      align-items: center;
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+      20%, 40%, 60%, 80% { transform: translateX(2px); }
+    }
+    
+    .error-message.visible {
+      display: flex;
+    }
+    
+    .error-message i {
+      margin-right: 0.375rem;
+    }
+    
+    .form-input.error {
+      border-color: var(--error);
+      background-color: rgba(230, 57, 70, 0.03);
+    }
+    
+    .form-input.error:focus {
+      box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+    }
+    
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: flex-start;
+      border-left: 4px solid transparent;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .alert:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    .alert i {
+      margin-right: 0.75rem;
+      margin-top: 0.125rem;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .alert-info {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border-left-color: #0ea5e9;
+    }
+    
+    .alert-success {
+      background-color: #dcfce7;
+      color: #15803d;
+      border-left-color: #22c55e;
+    }
+    
+    .alert-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-left-color: #f59e0b;
+    }
+    
+    .mini-preview {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-tertiary);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      transition: all var(--transition);
+    }
+    
+    .form-group:focus-within .mini-preview {
+      border-color: var(--secondary-light);
+      background-color: var(--bg-highlight-secondary);
+    }
+    
+    .preview-header {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .preview-header i {
+      margin-right: 0.375rem;
+      color: var(--secondary);
+    }
+    
+    .preview-content {
+      font-style: italic;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .badge-required {
+      background-color: rgba(230, 57, 70, 0.1);
+      color: var(--error);
+    }
+    
+    .badge-optional {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+    
+    .form-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      background-color: var(--bg-secondary);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.6s ease;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn-default {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-default:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--gradient-secondary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(46, 196, 182, 0.2);
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(46, 196, 182, 0.3);
+    }
+    
+    .btn-icon {
+      margin-right: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .generate-button-container {
+      margin-top: 1.5rem;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    .generate-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.125rem 2.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      color: white;
+      background: var(--gradient-secondary);
+      box-shadow: 0 6px 15px rgba(46, 196, 182, 0.3);
+      transition: all var(--transition);
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      transform: translateZ(0);
+    }
+    
+    .generate-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.8s ease;
+    }
+    
+    .generate-button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 20px rgba(46, 196, 182, 0.4);
+    }
+    
+    .generate-button:hover::before {
+      left: 100%;
+    }
+    
+    .generate-button-icon {
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    /* 結果モーダル */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-container {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      max-width: 90%;
+      width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .modal-overlay.active .modal-container {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-highlight-secondary);
+    }
+    
+    .modal-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .modal-title i {
+      margin-right: 0.75rem;
+      color: var(--success);
+    }
+    
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      transition: all var(--transition);
+      background-color: var(--bg-tertiary);
+    }
+    
+    .modal-close:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    
+    .modal-preview {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      height: 450px;
+      overflow: hidden;
+      position: relative;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .modal-preview:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .modal-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: all var(--transition);
+    }
+    
+    .modal-preview:hover img {
+      transform: scale(1.02);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+    
+    /* 通知 */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 0.875rem 1.25rem;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      transform: translateX(120%);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-left: 4px solid transparent;
+      max-width: 350px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-success {
+      border-left-color: var(--success);
+    }
+    
+    .notification-warning {
+      border-left-color: var(--warning);
+    }
+    
+    .notification-error {
+      border-left-color: var(--error);
+    }
+    
+    .notification-info {
+      border-left-color: var(--primary);
+    }
+    
+    .notification i {
+      margin-right: 0.75rem;
+      font-size: 1.125rem;
+    }
+    
+    .notification-success i {
+      color: var(--success);
+    }
+    
+    .notification-warning i {
+      color: var(--warning);
+    }
+    
+    .notification-error i {
+      color: var(--error);
+    }
+    
+    .notification-info i {
+      color: var(--primary);
+    }
+    
+    /* タイピングインジケーター */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: currentColor;
+      border-radius: 50%;
+      margin: 0 2px;
+      opacity: 0.6;
+    }
+    
+    .typing-dot:nth-child(1) {
+      animation: pulseDot 1.4s infinite;
+    }
+    
+    .typing-dot:nth-child(2) {
+      animation: pulseDot 1.4s infinite 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+      animation: pulseDot 1.4s infinite 0.4s;
+    }
+    
+    @keyframes pulseDot {
+      0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+    
+    /* フローティングボタン */
+    .floating-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: var(--gradient-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+      cursor: pointer;
+      transition: all var(--transition-bounce);
+      z-index: 100;
+      font-size: 1.25rem;
+    }
+    
+    .floating-button:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(67, 97, 238, 0.4);
+      border-radius: 28px;
+    }
+    
+    .floating-button-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background-color: var(--bg-primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 0.5rem;
+      display: none;
+      flex-direction: column;
+      min-width: 220px;
+      transform: translateZ(0);
+      border: 1px solid var(--border-color);
+    }
+    
+    .floating-button-menu.show {
+      display: flex;
+      animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @keyframes scaleUp {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .floating-button-item {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      margin-bottom: 0.25rem;
+    }
+    
+    .floating-button-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .floating-button-item:hover {
+      background-color: var(--bg-highlight);
+      color: var(--primary);
+      transform: translateX(3px);
+    }
+    
+    .floating-button-item i {
+      margin-right: 0.75rem;
+      color: var(--primary);
+      transition: all var(--transition);
+    }
+    
+    .floating-button-item:hover i {
+      transform: scale(1.1);
+    }
+    
+    /* モードスイッチャー */
+    .mode-switcher {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 90;
+    }
+    
+    .mode-button {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-primary);
+      color: var(--text-tertiary);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all var(--transition-bounce);
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .mode-button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      color: var(--primary);
+    }
+    
+    .mode-button.active-chat {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+      border: none;
+    }
+    
+    .mode-button.active-form {
+      background: var(--gradient-secondary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(46, 196, 182, 0.3);
+      border: none;
+    }
+    
+    .tooltip-left {
+      position: absolute;
+      right: 56px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: var(--text-primary);
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition);
+      box-shadow: var(--shadow);
+    }
+    
+    .tooltip-left::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent var(--text-primary);
+    }
+    
+    .mode-button:hover .tooltip-left {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(-5px);
+    }
+    
+    /* スクロールバースタイル */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-tertiary);
+      border-radius: 4px;
+      transition: all var(--transition);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+    
+    /* カスタムアニメーション */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    /* 影強調効果 */
+    .shadow-effect {
+      transition: all var(--transition);
+    }
+    
+    .shadow-effect:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* プレースホルダーのアニメーション */
+    .form-input::placeholder {
+      transition: all var(--transition);
+      opacity: 0.7;
+    }
+    
+    .form-input:focus::placeholder {
+      opacity: 0.5;
+      transform: translateX(5px);
+    }
+    
+    /* フォーカス補助インジケーター */
+    .focus-indicator {
+      position: absolute;
+      width: 0;
+      height: 100%;
+      background-color: var(--bg-highlight-secondary);
+      opacity: 0;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      transition: all var(--transition);
+      border-radius: var(--radius-sm);
+    }
+    
+    .form-group:focus-within .focus-indicator {
+      width: 100%;
+      opacity: 0.5;
+    }
+    
+    /* 送信ボタンのアクティブ状態 */
+    .chat-submit:active, .btn:active, .generate-button:active {
+      transform: scale(0.98);
+    }
+    
+    /* レスポンシブ対応 */
+    @media (max-width: 1024px) {
+      .welcome-modes {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .welcome-card {
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .mode-switcher {
+        bottom: 80px;
+        top: auto;
+        right: 20px;
+        flex-direction: row;
+        gap: 10px;
+      }
+      
+      .mode-button {
+        margin-bottom: 0;
+      }
+      
+      .tooltip-left {
+        top: -40px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .tooltip-left::after {
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-color: var(--text-primary) transparent transparent transparent;
+      }
+      
+      .mode-button:hover .tooltip-left {
+        transform: translateX(-50%) translateY(-5px);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .welcome-title {
+        font-size: 2rem;
+      }
+      
+      .welcome-benefits {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .benefit-item {
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .form-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      
+      .form-tab {
+        padding: 0.75rem 1rem;
+      }
+      
+      .header-content {
+        padding: 0.75rem 1rem;
+      }
+      
+      .logo-icon {
+        width: 2.25rem;
+        height: 2.25rem;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .form-tab span {
+        display: none;
+      }
+      
+      .form-tab i {
+        margin-right: 0;
+        font-size: 1.125rem;
+      }
+      
+      .generate-button {
+        width: 100%;
+        padding: 1rem 1.5rem;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .btn-header span {
+        display: none;
+      }
+      
+      .btn-header {
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+      }
+      
+      .btn-header i {
+        margin-right: 0;
+      }
+      
+      .floating-button {
+        width: 50px;
+        height: 50px;
+        bottom: 16px;
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 通知エリア -->
+    <div class="notification notification-success" id="notification">
+      <i class="fas fa-check-circle"></i>
+      <span id="notification-message">通知メッセージ</span>
+    </div>
+
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <span>アイプロ</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn-header btn-header-default" id="help-button">
+            <i class="fas fa-question-circle"></i>
+            <span>ヘルプ</span>
+          </button>
+          <button class="btn-header btn-header-primary" id="new-project-button">
+            <i class="fas fa-plus"></i>
+            <span>新規作成</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <div class="main-container">
+      <!-- ウェルカム画面 -->
+      <div class="welcome-container" id="welcome-screen">
+        <div class="welcome-header">
+          <h1 class="welcome-title">AIで企画書作成をもっと簡単に</h1>
+          <p class="welcome-subtitle">アイプロは、AIを活用してビジネス企画書を簡単に作成できるツールです。豊富な情報と美しいデザインで、どんなビジネスアイデアも魅力的な企画書に変換します。</p>
+        </div>
+        
+        <div class="welcome-modes">
+          <div class="welcome-card" id="chat-card">
+            <div class="card-header card-header-chat">
+              <div class="card-icon">
+                <i class="fas fa-comment-dots"></i>
+              </div>
+              <h3 class="card-title">会話モード</h3>
+              <p class="card-subtitle">AIアシスタントとの対話で情報を入力</p>
+            </div>
+            <div class="card-body">
+              <ul class="card-features">
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>自然な会話形式での情報収集</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>AIが質問を通じて必要情報を引き出し</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>リアルタイムのフィードバック</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>カジュアルで柔軟なプロセス</span>
+                </li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <button class="btn-start btn-start-chat" id="start-chat">
+                <i class="fas fa-play mr-1"></i> 会話モードで始める
+              </button>
+            </div>
+          </div>
+          
+          <div class="welcome-card" id="form-card">
+            <div class="card-header card-header-form">
+              <div class="card-icon">
+                <i class="fas fa-clipboard-list"></i>
+              </div>
+              <h3 class="card-title">フォームモード</h3>
+              <p class="card-subtitle">構造化されたフォームで直接入力</p>
+            </div>
+            <div class="card-body">
+              <ul class="card-features">
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>段階的な情報入力プロセス</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>視覚的な進捗管理</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>詳細なガイダンスと入力例</span>
+                </li>
+                <li class="card-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>体系的でビジネスライクなアプローチ</span>
+                </li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <button class="btn-start btn-start-form" id="start-form">
+                <i class="fas fa-play mr-1"></i> フォームモードで始める
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="welcome-benefits">
+          <div class="benefit-item">
+            <div class="benefit-icon benefit-icon-1">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h4 class="benefit-title">時間の大幅削減</h4>
+            <p class="benefit-text">企画書作成の時間を最大90%削減。数時間かかる作業がわずか数分で完了します。</p>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon benefit-icon-2">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h4 class="benefit-title">データ駆動の戦略</h4>
+            <p class="benefit-text">AIが業界動向や市場データを分析し、実行可能な戦略的提案を自動生成します。</p>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon benefit-icon-3">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <h4 class="benefit-title">プロ品質のデザイン</h4>
+            <p class="benefit-text">美しいテンプレートとビジュアルで、見た目も内容も洗練された企画書を作成できます。</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- チャットモード UI -->
+      <div class="chat-container" id="chat-mode">
+        <div class="chat-header">
+          <div class="chat-title">
+            <i class="fas fa-comment-dots"></i>
+            <span>AIアシスタントと会話</span>
+          </div>
+          <div class="chat-progress" id="chat-progress-indicator">
+            <i class="fas fa-clipboard-check"></i>
+            <span>情報収集: <span id="chat-progress-value">15%</span></span>
+          </div>
+        </div>
+        
+        <div class="chat-interface">
+          <div class="chat-messages" id="chat-messages">
+            <!-- AIの初期メッセージ -->
+            <div class="message message-ai">
+              <div class="message-header">
+                <div class="message-avatar avatar-ai">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-name">アイプロ AI</div>
+                <div class="message-time">たった今</div>
+              </div>
+              <div class="message-content">
+                <p>こんにちは！企画書作成をお手伝いします。まずは、あなたのビジネスの<strong>業界や市場セグメント</strong>について教えてください。</p>
+                <div class="suggestions">
+                  <div class="suggestion">高齢者向けヘルスケア</div>
+                  <div class="suggestion">EC/小売</div>
+                  <div class="suggestion">教育/学習</div>
+                  <div class="suggestion">飲食/フード</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+              <input type="text" class="chat-input" id="chat-input" placeholder="メッセージを入力... (Enterで送信)" />
+            </div>
+            <button class="chat-submit" id="chat-submit">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="chat-actions">
+          <button class="generate-button" id="chat-generate-button">
+            <i class="fas fa-file-powerpoint generate-button-icon"></i>
+            <span>企画書を生成する</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- フォームモード UI -->
+      <div class="form-container" id="form-mode">
+        <div class="form-header">
+          <div class="form-title">
+            <i class="fas fa-clipboard-list"></i>
+            <span>企画書情報入力</span>
+          </div>
+          <div>
+            <span class="badge badge-required">必須</span>
+            <span class="badge badge-optional">任意</span>
+          </div>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-header">
+            <div class="progress-title">
+              <i class="fas fa-chart-line"></i>
+              <span>企画書作成の進捗</span>
+            </div>
+            <div class="progress-percentage" id="progress-percentage">25%</div>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar" style="width: 25%"></div>
+          </div>
+          <div class="progress-steps">
+            <div class="progress-line"></div>
+            <div class="progress-step active" data-step="1">
+              <div class="progress-step-dot"></div>
+              <div class="progress-step-label">基本情報</div>
+            </div>
+            <div class="progress-step" data-step="2">
+              <div class="progress-step-dot"></div>
+              <div class="progress-step-label">追加情報</div>
+            </div>
+            <div class="progress-step" data-step="3">
+              <div class="progress-step-dot"></div>
+              <div class="progress-step-label">制約条件</div>
+            </div>
+            <div class="progress-step" data-step="4">
+              <div class="progress-step-dot"></div>
+              <div class="progress-step-label">確認・生成</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-body">
+          <div class="form-tabs">
+            <div class="form-tab active" data-tab="basic" id="tab-basic">
+              <i class="fas fa-info-circle"></i>
+              <span>基本情報</span>
+            </div>
+            <div class="form-tab" data-tab="additional" id="tab-additional">
+              <i class="fas fa-chart-line"></i>
+              <span>追加情報</span>
+            </div>
+            <div class="form-tab" data-tab="constraints" id="tab-constraints">
+              <i class="fas fa-sliders-h"></i>
+              <span>制約条件</span>
+            </div>
+            <div class="form-tab" data-tab="summary" id="tab-summary">
+              <i class="fas fa-check-circle"></i>
+              <span>入力確認</span>
+            </div>
+          </div>
+          
+          <!-- 基本情報タブ -->
+          <div class="tab-content active" id="content-basic">
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              <div>
+                <p>基本情報は企画書の核となる部分です。具体的に入力するほど、より質の高い企画書が作成できます。</p>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label form-label-required" for="industry">
+                業界・市場セグメント
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">具体的な市場や顧客層を含めると効果的です</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <textarea class="form-input form-textarea" id="industry" placeholder="例：高齢化が進む地方都市での宅配事業、オンライン教育プラットフォーム、法人向けSaaSなど"></textarea>
+                <div class="input-sync-animation" id="industry-sync"></div>
+                <div class="mini-preview">
+                  <div class="preview-header">
+                    <i class="fas fa-magic"></i>
+                    <span>AIプレビュー</span>
+                  </div>
+                  <div class="preview-content" id="industry-preview">
+                    業界・市場情報を入力すると、AIが分析してプレビューを表示します
+                  </div>
+                </div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  特化した市場領域や差別化ポイントを含めると具体的な戦略提案が可能になります
+                </span>
+                <span class="character-count" id="industry-count">0/300文字</span>
+              </div>
+              <div class="error-message" id="industry-error">
+                <i class="fas fa-exclamation-circle"></i>
+                この項目は必須です
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label form-label-required" for="strengths">
+                企業の強みと資源
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">競争優位性につながる強みを記入します</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <textarea class="form-input form-textarea" id="strengths" placeholder="例：地域密着型ネットワーク、専門技術を持つ人材、独自技術・特許、豊富な顧客データなど"></textarea>
+                <div class="input-sync-animation" id="strengths-sync"></div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  具体的な数値や実績があれば併せて記入してください
+                </span>
+                <span class="character-count" id="strengths-count">0/300文字</span>
+              </div>
+              <div class="error-message" id="strengths-error">
+                <i class="fas fa-exclamation-circle"></i>
+                この項目は必須です
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label form-label-required" for="challenges">
+                直面する課題
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">解決したい問題や市場課題を記入します</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <textarea class="form-input form-textarea" id="challenges" placeholder="例：高齢化による市場縮小、大手企業との競争激化、認知度不足、デジタル化の遅れなど"></textarea>
+                <div class="input-sync-animation" id="challenges-sync"></div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  解決したい課題の優先順位や影響度も記入するとより良い分析が可能です
+                </span>
+                <span class="character-count" id="challenges-count">0/300文字</span>
+              </div>
+              <div class="error-message" id="challenges-error">
+                <i class="fas fa-exclamation-circle"></i>
+                この項目は必須です
+              </div>
+            </div>
+            
+            <div class="form-footer">
+              <div></div>
+              <button class="btn btn-secondary" id="next-basic">
+                次へ進む <i class="fas fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- 追加情報タブ -->
+          <div class="tab-content" id="content-additional">
+            <!-- 追加情報のコンテンツ -->
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              <div>
+                <p>追加情報を入力することで、より具体的な戦略提案と市場分析が可能になります。</p>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label" for="competition">
+                競合状況
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">主要競合と市場状況を記入します</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <textarea class="form-input form-textarea" id="competition" placeholder="例：地域内に類似サービス3社、大手企業の参入計画あり、オンライン販売との競合など"></textarea>
+                <div class="input-sync-animation" id="competition-sync"></div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  競合との差別化ポイントも記入すると効果的です
+                </span>
+                <span class="character-count" id="competition-count">0/300文字</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label" for="target">
+                顧客ターゲット候補
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">理想的な顧客層や購買決定者を記入します</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <textarea class="form-input form-textarea" id="target" placeholder="例：65歳以上の一人暮らし高齢者、子育て世代の30-40代女性、IT部門責任者など"></textarea>
+                <div class="input-sync-animation" id="target-sync"></div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  顧客の具体的な特性や行動パターンを含めると、マーケティング戦略がより詳細になります
+                </span>
+                <span class="character-count" id="target-count">0/300文字</span>
+              </div>
+            </div>
+            
+            <div class="form-footer">
+              <button class="btn btn-default" id="prev-additional">
+                <i class="fas fa-arrow-left mr-1"></i> 戻る
+              </button>
+              <button class="btn btn-secondary" id="next-additional">
+                次へ進む <i class="fas fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- 制約条件タブ -->
+          <div class="tab-content" id="content-constraints">
+            <!-- 制約条件のコンテンツ -->
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              <div>
+                <p>制約条件を明確にすることで、より実現可能性の高い企画書を作成できます。</p>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <div class="focus-indicator"></div>
+              <label class="form-label" for="budget">
+                予算規模
+                <i class="fas fa-info-circle tooltip">
+                  <span class="tooltip-text">利用可能な予算の目安を記入します</span>
+                </i>
+              </label>
+              <div class="input-container">
+                <input type="text" class="form-input" id="budget" placeholder="例：初期投資300万円、年間運営費500万円、広告予算月10万円など" />
+                <div class="input-sync-animation" id="budget-sync"></div>
+              </div>
+              <div class="form-helper">
+                <span>
+                  <i class="fas fa-lightbulb form-helper-icon"></i>
+                  初期投資と運営費用を分けて記載するとより正確な収支計画が作成できます
+                </span>
+                <span class="character-count" id="budget-count">0/100文字</span>
+              </div>
+            </div>
+            
+            <div class="form-footer">
+              <button class="btn btn-default" id="prev-constraints">
+                <i class="fas fa-arrow-left mr-1"></i> 戻る
+              </button>
+              <button class="btn btn-secondary" id="next-constraints">
+                入力内容を確認 <i class="fas fa-check-circle ml-1"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- 入力確認タブ -->
+          <div class="tab-content" id="content-summary">
+            <!-- 確認ページのコンテンツ -->
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <p>入力情報を確認してください。問題なければ、「企画書を生成する」ボタンをクリックしてください。</p>
+              </div>
+            </div>
+            
+            <!-- 入力内容のサマリー表示 -->
+            <div class="form-group">
+              <div class="bg-white p-4 rounded-md border border-gray-200 mb-4 shadow-effect">
+                <h3 class="font-semibold text-secondary text-sm mb-2 flex items-center">
+                  <i class="fas fa-info-circle text-secondary mr-2"></i>基本情報
+                </h3>
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1 font-medium">業界・市場セグメント</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-industry">未入力</div>
+                </div>
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1 font-medium">企業の強みと資源</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-strengths">未入力</div>
+                </div>
+                <div>
+                 <div class="text-xs text-gray-500 mb-1 font-medium">直面する課題</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-challenges">未入力</div>
+                </div>
+              </div>
+              
+              <div class="bg-white p-4 rounded-md border border-gray-200 mb-4 shadow-effect">
+                <h3 class="font-semibold text-secondary text-sm mb-2 flex items-center">
+                  <i class="fas fa-chart-line text-secondary mr-2"></i>追加情報
+                </h3>
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1 font-medium">競合状況</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-competition">未入力</div>
+                </div>
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1 font-medium">顧客ターゲット候補</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-target">未入力</div>
+                </div>
+              </div>
+              
+              <div class="bg-white p-4 rounded-md border border-gray-200 shadow-effect">
+                <h3 class="font-semibold text-secondary text-sm mb-2 flex items-center">
+                  <i class="fas fa-sliders-h text-secondary mr-2"></i>制約条件
+                </h3>
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1 font-medium">予算規模</div>
+                  <div class="text-sm p-2 bg-gray-50 rounded-md" id="summary-budget">未入力</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-footer">
+              <button class="btn btn-default" id="prev-summary">
+                <i class="fas fa-arrow-left mr-1"></i> 戻る
+              </button>
+              <button class="btn btn-secondary" id="edit-info">
+                <i class="fas fa-edit mr-1"></i> 情報を編集
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="generate-button-container">
+          <button class="generate-button" id="form-generate-button">
+            <i class="fas fa-file-powerpoint generate-button-icon"></i>
+            企画書を生成する
+          </button>
+        </div>
+      </div>
+      
+      <!-- モードスイッチャー -->
+      <div class="mode-switcher" id="mode-switcher">
+        <div class="mode-button" id="switch-to-chat">
+          <i class="fas fa-comment-dots"></i>
+          <span class="tooltip-left">会話モードに切り替え</span>
+        </div>
+        <div class="mode-button" id="switch-to-form">
+          <i class="fas fa-clipboard-list"></i>
+          <span class="tooltip-left">フォームモードに切り替え</span>
+        </div>
+      </div>
+      
+      <!-- フローティングヘルプボタン -->
+      <div class="floating-button" id="floating-help">
+        <i class="fas fa-question"></i>
+        <div class="floating-button-menu" id="help-menu">
+          <div class="floating-button-item" id="help-usage">
+            <i class="fas fa-book"></i>
+            <span>使い方ガイド</span>
+          </div>
+          <div class="floating-button-item" id="help-tips">
+            <i class="fas fa-lightbulb"></i>
+            <span>入力のコツ</span>
+          </div>
+          <div class="floating-button-item" id="help-samples">
+            <i class="fas fa-file-alt"></i>
+            <span>サンプル企画書</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 企画書生成結果モーダル -->
+    <div class="modal-overlay" id="result-modal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="fas fa-check-circle"></i>
+            <span>企画書が完成しました</span>
+          </div>
+          <div class="modal-close" id="modal-close">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="modal-preview">
+            <img src="/api/placeholder/800/450" alt="企画書プレビュー" id="preview-image" />
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" id="download-pdf">
+              <i class="fas fa-download btn-icon"></i> PDFをダウンロード
+            </button>
+            <button class="btn btn-secondary" id="download-pptx">
+              <i class="fas fa-file-powerpoint btn-icon"></i> PowerPointで開く
+            </button>
+            <button class="btn btn-default" id="create-new">
+              <i class="fas fa-plus btn-icon"></i> 新規作成
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM要素の取得
+      const welcomeScreen = document.getElementById('welcome-screen');
+      const chatMode = document.getElementById('chat-mode');
+      const formMode = document.getElementById('form-mode');
+      const modeSwitcher = document.getElementById('mode-switcher');
+      
+      const startChatBtn = document.getElementById('start-chat');
+      const startFormBtn = document.getElementById('start-form');
+      const chatCard = document.getElementById('chat-card');
+      const formCard = document.getElementById('form-card');
+      
+      const switchToChatBtn = document.getElementById('switch-to-chat');
+      const switchToFormBtn = document.getElementById('switch-to-form');
+      
+      const chatSubmitBtn = document.getElementById('chat-submit');
+      const chatInput = document.getElementById('chat-input');
+      const chatMessages = document.getElementById('chat-messages');
+      const chatProgressValue = document.getElementById('chat-progress-value');
+      const chatProgressIndicator = document.getElementById('chat-progress-indicator');
+      
+      const formTabs = document.querySelectorAll('.form-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      const nextBasicBtn = document.getElementById('next-basic');
+      const nextAdditionalBtn = document.getElementById('next-additional');
+      const nextConstraintsBtn = document.getElementById('next-constraints');
+      const prevAdditionalBtn = document.getElementById('prev-additional');
+      const prevConstraintsBtn = document.getElementById('prev-constraints');
+      const prevSummaryBtn = document.getElementById('prev-summary');
+      const editInfoBtn = document.getElementById('edit-info');
+      
+      const chatGenerateBtn = document.getElementById('chat-generate-button');
+      const formGenerateBtn = document.getElementById('form-generate-button');
+      
+      const progressBar = document.getElementById('progress-bar');
+      const progressPercentage = document.getElementById('progress-percentage');
+      const progressSteps = document.querySelectorAll('.progress-step');
+      
+      const floatingHelpBtn = document.getElementById('floating-help');
+      const helpMenu = document.getElementById('help-menu');
+      const helpUsageBtn = document.getElementById('help-usage');
+      const helpTipsBtn = document.getElementById('help-tips');
+      const helpSamplesBtn = document.getElementById('help-samples');
+      
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notification-message');
+      
+      const resultModal = document.getElementById('result-modal');
+      const modalClose = document.getElementById('modal-close');
+      const downloadPdfBtn = document.getElementById('download-pdf');
+      const downloadPptxBtn = document.getElementById('download-pptx');
+      const createNewBtn = document.getElementById('create-new');
+      
+      const newProjectButton = document.getElementById('new-project-button');
+      const helpButton = document.getElementById('help-button');
+      
+      // フォーム入力要素
+      const formInputs = {
+        industry: document.getElementById('industry'),
+        strengths: document.getElementById('strengths'),
+        challenges: document.getElementById('challenges'),
+        competition: document.getElementById('competition'),
+        target: document.getElementById('target'),
+        budget: document.getElementById('budget')
+      };
+      
+      // サマリー要素
+      const summaryElements = {
+        industry: document.getElementById('summary-industry'),
+        strengths: document.getElementById('summary-strengths'),
+        challenges: document.getElementById('summary-challenges'),
+        competition: document.getElementById('summary-competition'),
+        target: document.getElementById('summary-target'),
+        budget: document.getElementById('summary-budget')
+      };
+      
+      // 文字数カウント要素
+      const charCountElements = {
+        industry: document.getElementById('industry-count'),
+        strengths: document.getElementById('strengths-count'),
+        challenges: document.getElementById('challenges-count'),
+        competition: document.getElementById('competition-count'),
+        target: document.getElementById('target-count'),
+        budget: document.getElementById('budget-count')
+      };
+      
+      // エラーメッセージ要素
+      const errorElements = {
+        industry: document.getElementById('industry-error'),
+        strengths: document.getElementById('strengths-error'),
+        challenges: document.getElementById('challenges-error')
+      };
+      
+      // 同期アニメーション要素
+      const syncElements = {
+        industry: document.getElementById('industry-sync'),
+        strengths: document.getElementById('strengths-sync'),
+        challenges: document.getElementById('challenges-sync'),
+        competition: document.getElementById('competition-sync'),
+        target: document.getElementById('target-sync'),
+        budget: document.getElementById('budget-sync')
+      };
+      
+      // AIプレビュー要素
+      const previewElements = {
+        industry: document.getElementById('industry-preview')
+      };
+      
+      // 状態変数
+      let currentMode = null; // 'chat' or 'form'
+      let currentTab = 'basic';
+      let isGenerating = false;
+      let isModalOpen = false;
+      let chatProgress = 15; // 初期値
+      let formData = {
+        industry: '',
+        strengths: '',
+        challenges: '',
+        competition: '',
+        target: '',
+        budget: ''
+      };
+      
+      // カード選択ハイライト
+      chatCard.addEventListener('click', function() {
+        chatCard.classList.add('welcome-card-active');
+        formCard.classList.remove('welcome-card-active');
+      });
+      
+      formCard.addEventListener('click', function() {
+        formCard.classList.add('welcome-card-active');
+        chatCard.classList.remove('welcome-card-active');
+      });
+      
+      // モード選択・開始
+      startChatBtn.addEventListener('click', function() {
+        startMode('chat');
+      });
+      
+      startFormBtn.addEventListener('click', function() {
+        startMode('form');
+      });
+      
+      // モード切り替え
+      switchToChatBtn.addEventListener('click', function() {
+        switchMode('chat');
+      });
+      
+      switchToFormBtn.addEventListener('click', function() {
+        switchMode('form');
+      });
+      
+      // モード開始
+      function startMode(mode) {
+        currentMode = mode;
+        welcomeScreen.style.display = 'none';
+        modeSwitcher.style.display = 'flex';
+        
+        if (mode === 'chat') {
+          chatMode.style.display = 'block';
+          formMode.style.display = 'none';
+          switchToChatBtn.classList.add('active-chat');
+          switchToFormBtn.classList.remove('active-form');
+          chatInput.focus();
+          showNotification('success', 'AIアシスタントとの会話を開始します');
+        } else {
+          formMode.style.display = 'block';
+          chatMode.style.display = 'none';
+          switchToFormBtn.classList.add('active-form');
+          switchToChatBtn.classList.remove('active-chat');
+          formInputs.industry.focus();
+          showNotification('success', 'フォーム入力モードを開始します');
+        }
+      }
+      
+      // モード切り替え
+      function switchMode(mode) {
+        if (currentMode === mode) return;
+        
+        currentMode = mode;
+        
+        if (mode === 'chat') {
+          chatMode.style.display = 'block';
+          formMode.style.display = 'none';
+          switchToChatBtn.classList.add('active-chat');
+          switchToFormBtn.classList.remove('active-form');
+          chatInput.focus();
+          showNotification('success', '会話モードに切り替えました');
+          
+          // フォームからデータを同期
+          syncFormToChat();
+        } else {
+          formMode.style.display = 'block';
+          chatMode.style.display = 'none';
+          switchToFormBtn.classList.add('active-form');
+          switchToChatBtn.classList.remove('active-chat');
+          formInputs.industry.focus();
+          showNotification('success', 'フォームモードに切り替えました');
+          
+          // チャットからデータを同期
+          syncChatToForm();
+        }
+      }
+      
+      // フォームからチャットにデータを同期
+      function syncFormToChat() {
+        // 入力済みデータに基づいてチャット進捗を更新
+        updateChatProgress();
+        
+        // 進捗アニメーション
+        chatProgressIndicator.classList.add('updating');
+        setTimeout(() => {
+          chatProgressIndicator.classList.remove('updating');
+        }, 1500);
+      }
+      
+      // チャットからフォームにデータを同期
+      function syncChatToForm() {
+        // チャットの進捗に基づいてフォームタブを適切に選択
+        if (chatProgress >= 75) {
+          switchTab('summary');
+        } else if (chatProgress >= 50) {
+          switchTab('constraints');
+        } else if (chatProgress >= 25) {
+          switchTab('additional');
+        } else {
+          switchTab('basic');
+        }
+        
+        // 進捗アニメーション
+        progressPercentage.classList.add('updating');
+        setTimeout(() => {
+          progressPercentage.classList.remove('updating');
+        }, 1500);
+      }
+      
+      // チャット進捗の更新
+      function updateChatProgress() {
+        // 必須項目の確認
+        const requiredFields = ['industry', 'strengths', 'challenges'];
+        const completedRequired = requiredFields.filter(field => formData[field]).length;
+        
+        // 追加項目の確認
+        const optionalFields = ['competition', 'target', 'budget'];
+        const completedOptional = optionalFields.filter(field => formData[field]).length;
+        
+        // 進捗率の計算
+        let progress = (completedRequired / requiredFields.length) * 60;
+        progress += (completedOptional / optionalFields.length) * 40;
+        
+        // 最小値15%、最大値95%に制限
+        chatProgress = Math.max(15, Math.min(95, Math.round(progress)));
+        
+        // 表示を更新
+        chatProgressValue.textContent = `${chatProgress}%`;
+      }
+      
+      // チャット機能
+      chatSubmitBtn.addEventListener('click', sendChatMessage);
+      
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendChatMessage();
+        }
+      });
+      
+      function sendChatMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        // ユーザーメッセージの追加
+        addUserMessage(message);
+        
+        // 入力フィールドのクリア
+        chatInput.value = '';
+        
+        // AIの応答シミュレーション
+        simulateAIResponse(message);
+      }
+      
+      // ユーザーメッセージの追加
+      function addUserMessage(message) {
+        const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageEl = document.createElement('div');
+        messageEl.className = 'message message-user';
+        messageEl.innerHTML = `
+          <div class="message-header">
+            <div class="message-avatar avatar-user">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="message-name">あなた</div>
+            <div class="message-time">${timestamp}</div>
+          </div>
+          <div class="message-content">
+            <p>${escapeHtml(message)}</p>
+          </div>
+        `;
+        
+        chatMessages.appendChild(messageEl);
+        scrollToBottom(chatMessages);
+      }
+      
+      // AI応答のシミュレーション
+      function simulateAIResponse(userMessage) {
+        // 「企画書生成」コマンドのチェック
+        if (userMessage.toLowerCase().includes('企画書') && 
+            (userMessage.toLowerCase().includes('生成') || userMessage.toLowerCase().includes('作成'))) {
+          simulateGeneration();
+          return;
+        }
+        
+        // タイピングインジケータの追加
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'message message-ai';
+        const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        typingIndicator.innerHTML = `
+          <div class="message-header">
+            <div class="message-avatar avatar-ai">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-name">アイプロ AI</div>
+            <div class="message-time">${timestamp}</div>
+          </div>
+          <div class="message-content">
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        `;
+        
+        chatMessages.appendChild(typingIndicator);
+        scrollToBottom(chatMessages);
+        
+        // メッセージの内容に基づいて保存するフィールドを決定
+        processUserMessage(userMessage);
+        
+        // AIの応答を生成
+        setTimeout(() => {
+          // タイピングインジケータを削除
+          chatMessages.removeChild(typingIndicator);
+          
+          let response, suggestions;
+          
+          // 進捗状況に基づいて適切な応答を選択
+          if (!formData.industry) {
+            response = `
+              <p>企画書作成をお手伝いします。まずは、あなたのビジネスの<strong>業界や市場セグメント</strong>について具体的に教えてください。</p>
+              <p>特定の顧客層や地域、ニッチな市場など、詳しく教えていただくほど質の高い企画書が作成できます。</p>
+            `;
+            suggestions = ['高齢者向けヘルスケア', 'オンライン教育サービス', 'サブスクリプションコマース', 'B2B SaaSソリューション'];
+          } 
+          else if (!formData.strengths) {
+            response = `
+              <p><strong>${formData.industry}</strong>の分野ですね。ありがとうございます。</p>
+              <p>次に、あなたの<strong>企業の強みや活用できる資源</strong>について教えてください。</p>
+              <p>例えば、独自技術、専門知識を持つ人材、既存の顧客基盤、ブランド力などです。</p>
+            `;
+            suggestions = ['技術力と特許', '業界での実績と信頼', '優秀な専門人材', '強固な顧客基盤'];
+          }
+          else if (!formData.challenges) {
+            response = `
+              <p>企業の強みについて理解しました。次に、現在<strong>直面している課題や解決したい問題</strong>について教えてください。</p>
+              <p>市場の変化、競合との関係、内部リソースの課題など、現状の問題点を具体的に教えていただけると、より適切な解決策を提案できます。</p>
+            `;
+            suggestions = ['競合との差別化が困難', '認知度・集客の不足', 'デジタル化の遅れ', '人材・リソースの制約'];
+          }
+          else if (!formData.competition) {
+            response = `
+              <p>基本情報をご提供いただき、ありがとうございます！</p>
+              <p>より詳細な分析のために、<strong>競合状況</strong>についても教えていただけますか？</p>
+              <p>主要な競合他社や、彼らとの差別化ポイントなどを教えてください。</p>
+            `;
+            suggestions = ['主要競合3社と特徴', '市場シェアの状況', '新規参入の動向', '企画書を生成する'];
+          }
+          else if (!formData.target) {
+            response = `
+              <p>競合情報をありがとうございます。</p>
+              <p>次に、想定している<strong>主要なターゲット顧客</strong>について詳しく教えてください。</p>
+              <p>年齢層、職業、ライフスタイル、行動パターンなど、具体的な顧客像があるとより精度の高い提案ができます。</p>
+            `;
+            suggestions = ['ターゲット顧客層を説明', '企画書を生成する'];
+          }
+          else if (!formData.budget) {
+            response = `
+              <p>ターゲット顧客についての情報をありがとうございます。</p>
+              <p>最後に、<strong>予算規模や投資計画</strong>について教えていただけますか？</p>
+              <p>初期投資額や運用コストなどの概算があれば、実現可能性の高い提案ができます。</p>
+            `;
+            suggestions = ['予算規模を入力', '企画書を生成する'];
+          }
+          else {
+            // すべての情報が揃った場合
+            chatProgress = 95;
+            chatProgressValue.textContent = `${chatProgress}%`;
+            
+            // 進捗アニメーション
+            chatProgressIndicator.classList.add('updating');
+            setTimeout(() => {
+              chatProgressIndicator.classList.remove('updating');
+            }, 1500);
+            
+            response = `
+              <p><strong>必要な情報がすべて揃いました！</strong></p>
+              <p>充実した内容をご提供いただき、ありがとうございます。入力された情報をもとに、高品質な企画書を生成できます。</p>
+              <p>「企画書を生成する」ボタンをクリックして、ランチェスター戦略に基づく企画書を作成しましょう。</p>
+            `;
+            suggestions = ['企画書を生成する'];
+          }
+          
+          // AIメッセージの追加
+          const aiMessage = document.createElement('div');
+          aiMessage.className = 'message message-ai';
+          const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          let suggestionsHtml = '';
+          if (suggestions && suggestions.length > 0) {
+            suggestionsHtml = `
+              <div class="suggestions">
+                ${suggestions.map(text => `<div class="suggestion">${escapeHtml(text)}</div>`).join('')}
+              </div>
+            `;
+          }
+          
+          aiMessage.innerHTML = `
+            <div class="message-header">
+              <div class="message-avatar avatar-ai">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="message-name">アイプロ AI</div>
+              <div class="message-time">${timestamp}</div>
+            </div>
+            <div class="message-content">
+              ${response}
+              ${suggestionsHtml}
+            </div>
+          `;
+          
+          chatMessages.appendChild(aiMessage);
+          scrollToBottom(chatMessages);
+          
+          // 提案のクリックイベントを設定
+          setupSuggestionClickHandlers();
+          
+          // チャット進捗を更新
+          updateChatProgress();
+        }, 1500);
+      }
+      
+      // ユーザーメッセージの処理
+      function processUserMessage(message) {
+        const fieldMapping = {
+          '業界': 'industry',
+          '市場': 'industry',
+          'セグメント': 'industry',
+          '強み': 'strengths',
+          '資源': 'strengths',
+          '課題': 'challenges',
+          '問題': 'challenges',
+          '競合': 'competition',
+          '競争': 'competition',
+          'ターゲット': 'target',
+          '顧客': 'target',
+          '予算': 'budget',
+          '費用': 'budget'
+        };
+        
+        // まだ入力されていない最初のフィールドを特定
+        let targetField = null;
+        if (!formData.industry) targetField = 'industry';
+        else if (!formData.strengths) targetField = 'strengths';
+        else if (!formData.challenges) targetField = 'challenges';
+        else if (!formData.competition) targetField = 'competition';
+        else if (!formData.target) targetField = 'target';
+        else if (!formData.budget) targetField = 'budget';
+        
+        // メッセージ内のキーワードに基づいて別のフィールドが特定される場合は優先
+        for (const [keyword, field] of Object.entries(fieldMapping)) {
+          if (message.includes(keyword) && !formData[field]) {
+            targetField = field;
+            break;
+          }
+        }
+        
+        // フィールドが特定された場合、データを更新
+        if (targetField) {
+          formData[targetField] = message;
+          
+          // 対応するフォーム入力があれば更新
+          if (formInputs[targetField]) {
+            formInputs[targetField].value = message;
+            
+            // 文字数カウント更新
+            if (charCountElements[targetField]) {
+              updateCharacterCount(formInputs[targetField], charCountElements[targetField], targetField);
+            }
+            
+            // 同期アニメーション
+            if (syncElements[targetField]) {
+              showSyncAnimation(targetField);
+            }
+          }
+        }
+      }
+      
+      // 提案クリックイベントの設定
+      function setupSuggestionClickHandlers() {
+        const suggestions = document.querySelectorAll('.suggestion');
+        suggestions.forEach(suggestion => {
+          suggestion.addEventListener('click', function() {
+            const text = this.textContent;
+            
+            // 「企画書を生成する」の場合は生成処理を実行
+            if (text === '企画書を生成する') {
+              simulateGeneration();
+            } else {
+              // それ以外は入力欄に設定
+              chatInput.value = text;
+              chatInput.focus();
+            }
+          });
+        });
+      }
+      
+      // チャットスクロール
+      function scrollToBottom(element) {
+        element.scrollTop = element.scrollHeight;
+      }
+      
+      // HTMLエスケープ
+      function escapeHtml(text) {
+        return text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+      
+      // 企画書生成シミュレーション
+      function simulateGeneration() {
+        // 必須フィールドの確認
+        const requiredFields = ['industry', 'strengths', 'challenges'];
+        const missingFields = requiredFields.filter(field => !formData[field]);
+        
+        if (missingFields.length > 0) {
+          // 必須フィールドが不足している場合
+          const fieldNames = {
+            industry: '業界・市場セグメント',
+            strengths: '企業の強みと資源',
+            challenges: '直面する課題'
+          };
+          
+          const missingFieldNames = missingFields.map(field => fieldNames[field]);
+          
+          // チャットモードの場合
+          if (currentMode === 'chat') {
+            const response = `
+              <p><strong>企画書を生成するには、あと${missingFieldNames.length}つの必須情報が必要です：</strong></p>
+              <p>${missingFieldNames.join('、')}</p>
+              <p>これらの情報を教えていただけますか？</p>
+            `;
+            
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'message message-ai';
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            aiMessage.innerHTML = `
+              <div class="message-header">
+                <div class="message-avatar avatar-ai">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-name">アイプロ AI</div>
+                <div class="message-time">${timestamp}</div>
+              </div>
+              <div class="message-content">
+                ${response}
+              </div>
+            `;
+            
+            chatMessages.appendChild(aiMessage);
+            scrollToBottom(chatMessages);
+          } else {
+            // フォームモードの場合
+            showNotification('warning', `必須情報が不足しています：${missingFieldNames.join('、')}`);
+            
+            // 基本情報タブに切り替え
+            switchTab('basic');
+            
+            // 最初の未入力フィールドにフォーカス
+            formInputs[missingFields[0]].focus();
+          }
+          
+          return;
+        }
+        
+        // 生成中メッセージ
+        if (currentMode === 'chat') {
+          const response = `
+            <p><strong>企画書の生成を開始しました</strong></p>
+            <p>入力いただいた情報を基に、AI分析を実行しています...</p>
+            <p>ランチェスター戦略フレームワークに基づいた企画書を作成中です。少々お待ちください。</p>
+          `;
+          
+          const aiMessage = document.createElement('div');
+          aiMessage.className = 'message message-ai';
+          const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          aiMessage.innerHTML = `
+            <div class="message-header">
+              <div class="message-avatar avatar-ai">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="message-name">アイプロ AI</div>
+              <div class="message-time">${timestamp}</div>
+            </div>
+            <div class="message-content">
+              ${response}
+            </div>
+          `;
+          
+          chatMessages.appendChild(aiMessage);
+          scrollToBottom(chatMessages);
+        }
+        
+        // 生成完了シミュレーション
+        setTimeout(() => {
+          if (currentMode === 'chat') {
+            const successResponse = `
+              <p><strong>企画書の生成が完了しました！</strong></p>
+              <p>「${formData.industry}」向けのランチェスター戦略に基づく企画書を作成しました。</p>
+              <p><strong>企画書のポイント：</strong></p>
+              <ul>
+                <li>狭域特化戦略：${formData.target ? formData.target + 'に特化' : '特定市場セグメントへの集中'}</li>
+                <li>差別化要因：${formData.strengths ? formData.strengths.split(',')[0] + 'を活用' : '企業の強みを最大化'}</li>
+                <li>${formData.challenges ? '「' + formData.challenges.split(',')[0] + '」の課題に対応' : '課題解決アプローチ'}</li>
+              </ul>
+              <p>以下のボタンから、企画書をダウンロードできます。</p>
+            `;
+            
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'message message-ai';
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            aiMessage.innerHTML = `
+              <div class="message-header">
+                <div class="message-avatar avatar-ai">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-name">アイプロ AI</div>
+                <div class="message-time">${timestamp}</div>
+              </div>
+              <div class="message-content">
+                ${successResponse}
+              </div>
+            `;
+            
+            chatMessages.appendChild(aiMessage);
+            scrollToBottom(chatMessages);
+          }
+          
+          // 結果モーダルを表示
+          showResultModal();
+        }, 3000);
+      }
+      
+      // タブ切り替え
+      formTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          switchTab(tabId);
+        });
+      });
+      
+      function switchTab(tabId) {
+        // 同じタブならスキップ
+        if (currentTab === tabId) return;
+        
+        // 基本情報タブから別のタブに移動する場合はバリデーション
+        if (currentTab === 'basic' && tabId !== 'basic') {
+          if (!validateBasicTab()) {
+            return; // バリデーション失敗時は切り替えしない
+          }
+        }
+        
+        // タブのアクティブ状態を更新
+        formTabs.forEach(tab => {
+          const targetTab = tab.getAttribute('data-tab');
+          tab.classList.toggle('active', targetTab === tabId);
+        });
+        
+        // タブコンテンツの表示を切り替え
+        tabContents.forEach(content => {
+          const contentId = content.id.replace('content-', '');
+          if (contentId === tabId) {
+            content.style.display = 'block';
+            setTimeout(() => {
+              content.classList.add('active');
+            }, 10);
+          } else {
+            content.classList.remove('active');
+            setTimeout(() => {
+              if (contentId !== tabId) { // 既に非表示のタブには適用しない
+                content.style.display = 'none';
+              }
+            }, 300);
+          }
+        });
+        
+        // 現在のタブを更新
+        currentTab = tabId;
+        
+        // サマリータブの場合は内容を更新
+        if (tabId === 'summary') {
+          updateSummary();
+        }
+        
+        // 進捗を更新
+        updateProgress(tabId);
+      }
+      
+      // 進捗インジケータの更新
+      function updateProgress(tab) {
+        const progressValues = {
+          basic: 25,
+          additional: 50,
+          constraints: 75,
+          summary: 90
+        };
+        
+        const progressValue = progressValues[tab] || 25;
+        progressBar.style.width = `${progressValue}%`;
+        progressPercentage.textContent = `${progressValue}%`;
+        
+        // 進捗アニメーション
+        progressPercentage.classList.add('updating');
+        setTimeout(() => {
+          progressPercentage.classList.remove('updating');
+        }, 1500);
+        
+        // ステップインジケーターを更新
+        const tabOrder = { basic: 1, additional: 2, constraints: 3, summary: 4 };
+        const currentStepNumber = tabOrder[tab];
+        
+        progressSteps.forEach(step => {
+          const stepNumber = parseInt(step.getAttribute('data-step'));
+          
+          step.classList.toggle('active', stepNumber === currentStepNumber);
+          step.classList.toggle('completed', stepNumber < currentStepNumber);
+        });
+      }
+      
+      // 基本情報タブのバリデーション
+      function validateBasicTab() {
+        let isValid = true;
+        
+        // 必須フィールドをチェック
+        ['industry', 'strengths', 'challenges'].forEach(field => {
+          const input = formInputs[field];
+          const errorElement = errorElements[field];
+          
+          if (!input.value.trim()) {
+            input.classList.add('error');
+            errorElement.classList.add('visible');
+            isValid = false;
+            
+            // 最初のエラーに自動スクロール
+            if (isValid === false) {
+              input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              input.focus();
+              isValid = true; // 一度だけスクロールするためにリセット
+            }
+          } else {
+            input.classList.remove('error');
+            errorElement.classList.remove('visible');
+          }
+        });
+        
+        return isValid;
+      }
+      
+      // サマリー更新
+      function updateSummary() {
+        // フォームデータの収集
+        Object.keys(formInputs).forEach(key => {
+          formData[key] = formInputs[key].value.trim();
+        });
+        
+        // サマリー表示の更新
+        Object.keys(summaryElements).forEach(key => {
+          if (summaryElements[key]) {
+            summaryElements[key].textContent = formData[key] || '未入力';
+          }
+        });
+      }
+      
+      // 文字数カウンター設定
+      function setupCharacterCounters() {
+        Object.keys(formInputs).forEach(key => {
+          const input = formInputs[key];
+          const counter = charCountElements[key];
+          
+          if (input && counter) {
+            // 初期カウント更新
+            updateCharacterCount(input, counter, key);
+            
+            // 入力イベント
+            input.addEventListener('input', function() {
+              updateCharacterCount(this, counter, key);
+              
+              // 入力内容をformDataに反映
+              formData[key] = this.value.trim();
+              
+              // 業界フィールドの場合はAIプレビューも更新
+              if (key === 'industry' && this.value.trim().length > 10) {
+                updateIndustryPreview(this.value);
+              }
+            });
+          }
+        });
+      }
+      
+      // 文字数カウントの更新
+      function updateCharacterCount(input, counter, field) {
+        const maxLength = field === 'budget' ? 100 : 300;
+        const currentLength = input.value.length;
+        
+        counter.textContent = `${currentLength}/${maxLength}文字`;
+        
+        // 警告表示の切り替え
+        if (currentLength > maxLength * 0.8 && currentLength <= maxLength) {
+          counter.classList.add('warning');
+          counter.classList.remove('danger');
+        } else if (currentLength > maxLength) {
+          counter.classList.add('danger');
+          counter.classList.remove('warning');
+        } else {
+          counter.classList.remove('warning', 'danger');
+        }
+      }
+      
+      // 業界フィールドのAIプレビュー更新
+      function updateIndustryPreview(value) {
+        const preview = previewElements.industry;
+        
+        if (value.length > 10) {
+          preview.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> AIが分析中...`;
+          
+          // AIプレビュー生成のシミュレーション
+          setTimeout(() => {
+            let previewText = '';
+            
+            // キーワードに基づいた分析コメント生成
+            if (value.toLowerCase().includes('ヘルスケア') || value.toLowerCase().includes('医療')) {
+              previewText = 'ヘルスケア産業は高齢化社会において成長分野です。規制対応と技術革新のバランスが重要になります。';
+            } else if (value.toLowerCase().includes('小売') || value.toLowerCase().includes('ec')) {
+              previewText = 'EC/小売業界は競争が激しいため、顧客体験の向上とロイヤリティ施策が重要です。';
+            } else if (value.toLowerCase().includes('教育') || value.toLowerCase().includes('学習')) {
+              previewText = '教育/学習市場はデジタル化が進んでおり、パーソナライズと継続的な価値提供が差別化ポイントになります。';
+            } else if (value.toLowerCase().includes('saas') || value.toLowerCase().includes('クラウド')) {
+              previewText = 'SaaS市場は年率20%以上で成長中。カスタマーサクセスと初期導入の容易さが成功の鍵です。';
+            } else {
+              previewText = `「${value.substring(0, 20)}...」を含む市場では、顧客ニーズの深い理解と差別化戦略が重要です。`;
+            }
+            
+            preview.innerHTML = previewText;
+          }, 1000);
+        }
+      }
+      
+      // 同期アニメーション
+      function showSyncAnimation(field) {
+        const syncElement = syncElements[field];
+        if (syncElement) {
+          syncElement.classList.add('active');
+          setTimeout(() => {
+            syncElement.classList.remove('active');
+          }, 1000);
+        }
+      }
+      
+      // ナビゲーションボタン
+      nextBasicBtn.addEventListener('click', function() {
+        if (validateBasicTab()) {
+          switchTab('additional');
+        }
+      });
+      
+      nextAdditionalBtn.addEventListener('click', function() {
+        switchTab('constraints');
+      });
+      
+      nextConstraintsBtn.addEventListener('click', function() {
+        switchTab('summary');
+      });
+      
+      prevAdditionalBtn.addEventListener('click', function() {
+        switchTab('basic');
+      });
+      
+      prevConstraintsBtn.addEventListener('click', function() {
+        switchTab('additional');
+      });
+      
+      prevSummaryBtn.addEventListener('click', function() {
+        switchTab('constraints');
+      });
+      
+      editInfoBtn.addEventListener('click', function() {
+        switchTab('basic');
+      });
+      
+      // 企画書生成ボタン
+      chatGenerateBtn.addEventListener('click', function() {
+        simulateGeneration();
+      });
+      
+      formGenerateBtn.addEventListener('click', function() {
+        simulateGeneration();
+      });
+      
+      // 結果モーダル表示
+      function showResultModal() {
+        resultModal.classList.add('active');
+        isModalOpen = true;
+        
+        // 企画書タイトルをカスタマイズ
+        const modalTitle = document.querySelector('.modal-title span');
+        modalTitle.textContent = `${formData.industry || '企画書'}が完成しました`;
+        
+        showNotification('success', '企画書の生成が完了しました！');
+      }
+      
+      // モーダル関連イベント
+      modalClose.addEventListener('click', function() {
+        resultModal.classList.remove('active');
+        isModalOpen = false;
+      });
+      
+      // モーダル外クリックで閉じる
+      resultModal.addEventListener('click', function(e) {
+        if (e.target === resultModal) {
+          resultModal.classList.remove('active');
+          isModalOpen = false;
+        }
+      });
+      
+      // PDFダウンロード
+      downloadPdfBtn.addEventListener('click', function() {
+        showNotification('success', 'PDFのダウンロードを開始しました');
+        setTimeout(() => {
+          resultModal.classList.remove('active');
+          isModalOpen = false;
+        }, 1000);
+      });
+      
+      // PowerPointダウンロード
+      downloadPptxBtn.addEventListener('click', function() {
+        showNotification('success', 'PowerPointファイルのダウンロードを開始しました');
+        setTimeout(() => {
+          resultModal.classList.remove('active');
+          isModalOpen = false;
+        }, 1000);
+      });
+      
+      // 新規作成
+      createNewBtn.addEventListener('click', function() {
+        if (confirm('新しい企画書の作成を開始しますか？現在の入力内容はリセットされます。')) {
+          resetApplication();
+          resultModal.classList.remove('active');
+          isModalOpen = false;
+          showNotification('success', '新しい企画書の作成を開始します');
+        }
+      });
+      
+      // ヘッダーの新規作成ボタン
+      newProjectButton.addEventListener('click', function() {
+        if (confirm('新しい企画書の作成を開始しますか？現在の入力内容はリセットされます。')) {
+          resetApplication();
+          showNotification('success', '新しい企画書の作成を開始します');
+        }
+      });
+      
+      // フローティングヘルプボタンの操作
+      floatingHelpBtn.addEventListener('click', function() {
+        helpMenu.classList.toggle('show');
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!floatingHelpBtn.contains(e.target) && !helpMenu.contains(e.target)) {
+          helpMenu.classList.remove('show');
+        }
+      });
+      
+      // ヘルプメニュー項目
+      helpUsageBtn.addEventListener('click', function() {
+        showHelpMessage('使い方ガイド', `
+          <p><strong>アイプロの基本的な使い方：</strong></p>
+          <ol>
+            <li>「会話モード」または「フォームモード」を選択します</li>
+            <li>業界、強み、課題などの基本情報を入力します</li>
+            <li>追加情報を入力することで、より詳細な企画書を作成できます</li>
+            <li>「企画書を生成する」ボタンをクリックして完了です</li>
+          </ol>
+          <p>画面右上のモードスイッチャーで、いつでも入力方法を切り替えられます。</p>
+        `);
+      });
+      
+      helpTipsBtn.addEventListener('click', function() {
+        showHelpMessage('入力のコツ', `
+          <p><strong>より良い企画書を作成するコツ：</strong></p>
+          <ul>
+            <li>業界情報はできるだけニッチな市場を特定すると差別化しやすくなります</li>
+            <li>強みは数値や具体例を交えると説得力が増します</li>
+            <li>課題は優先順位をつけて記載すると解決策が明確になります</li>
+            <li>競合情報には差別化ポイントも併せて記載すると効果的です</li>
+          </ul>
+          <p>入力欄の下にあるヒントも参考にしてください。</p>
+        `);
+      });
+      
+      helpSamplesBtn.addEventListener('click', function() {
+        showHelpMessage('サンプル企画書', `
+          <p><strong>サンプル企画書が利用できます：</strong></p>
+          <p>以下のような業種別のサンプルがあります：</p>
+          <ul>
+            <li>高齢者向けヘルスケアサービス</li>
+            <li>オンライン教育プラットフォーム</li>
+            <li>サブスクリプション型ECサービス</li>
+            <li>企業向けSaaSソリューション</li>
+          </ul>
+          <p>サンプルを元に自社のビジネスに合わせてカスタマイズできます。</p>
+        `);
+      });
+      
+      // ヘルプボタン
+      helpButton.addEventListener('click', function() {
+        showHelpMessage('アイプロのヘルプ', `
+          <p><strong>アイプロへようこそ！</strong></p>
+          <p>アイプロは、AIを活用して高品質なビジネス企画書を簡単に作成できるツールです。</p>
+          <p><strong>主な機能：</strong></p>
+          <ul>
+            <li><strong>会話モード</strong>：AIアシスタントとの対話で情報を入力</li>
+            <li><strong>フォームモード</strong>：構造化されたフォームで直接入力</li>
+            <li><strong>AIプレビュー</strong>：入力内容に基づくリアルタイム分析</li>
+            <li><strong>マルチフォーマット出力</strong>：PDF、PowerPointなど複数形式で出力</li>
+          </ul>
+          <p>さらに詳しいヘルプは画面右下のヘルプボタンから確認できます。</p>
+        `);
+      });
+      
+      // ヘルプメッセージの表示
+      function showHelpMessage(title, content) {
+        // チャットモードの場合はメッセージとして表示
+        if (currentMode === 'chat') {
+          const aiMessage = document.createElement('div');
+          aiMessage.className = 'message message-ai';
+          const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          aiMessage.innerHTML = `
+            <div class="message-header">
+              <div class="message-avatar avatar-ai">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="message-name">アイプロ AI</div>
+              <div class="message-time">${timestamp}</div>
+            </div>
+            <div class="message-content">
+              <p><strong>${title}</strong></p>
+              ${content}
+            </div>
+          `;
+          
+          chatMessages.appendChild(aiMessage);
+          scrollToBottom(chatMessages);
+        } else {
+          // フォームモードの場合は通知として表示
+          showNotification('info', `${title} - ヘルプセクションを確認してください`);
+        }
+      }
+      
+      // 通知表示
+      function showNotification(type, message) {
+        notification.className = 'notification';
+        notification.classList.add(`notification-${type}`);
+        
+        // アイコンの設定
+        const icon = notification.querySelector('i');
+        if (icon) {
+          icon.className = '';
+          
+          switch (type) {
+            case 'success':
+              icon.classList.add('fas', 'fa-check-circle');
+              break;
+            case 'warning':
+              icon.classList.add('fas', 'fa-exclamation-triangle');
+              break;
+            case 'error':
+              icon.classList.add('fas', 'fa-times-circle');
+              break;
+            default:
+              icon.classList.add('fas', 'fa-info-circle');
+          }
+        }
+        
+        // メッセージの設定
+        notificationMessage.textContent = message;
+        
+        // 表示
+        notification.classList.add('show');
+        
+        // 4秒後に非表示
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 4000);
+      }
+      
+      // アプリケーションのリセット
+      function resetApplication() {
+        // フォームデータのリセット
+        Object.keys(formData).forEach(key => {
+          formData[key] = '';
+        });
+        
+        // フォーム入力のリセット
+        Object.keys(formInputs).forEach(key => {
+          if (formInputs[key]) {
+            formInputs[key].value = '';
+            formInputs[key].classList.remove('error');
+            
+            // 文字数カウント更新
+            if (charCountElements[key]) {
+              updateCharacterCount(formInputs[key], charCountElements[key], key);
+            }
+            
+            // エラーメッセージを非表示
+            if (errorElements[key]) {
+              errorElements[key].classList.remove('visible');
+            }
+          }
+        });
+        
+        // プレビューのリセット
+        if (previewElements.industry) {
+          previewElements.industry.textContent = '業界・市場情報を入力すると、AIが分析してプレビューを表示します';
+        }
+        
+        // タブを初期状態に
+        switchTab('basic');
+        
+        // チャット履歴をリセット
+        if (chatMessages) {
+          // 最初のメッセージだけ残す
+          const firstMessage = chatMessages.firstElementChild;
+          chatMessages.innerHTML = '';
+          if (firstMessage) {
+            chatMessages.appendChild(firstMessage);
+          }
+        }
+        
+        // チャット進捗をリセット
+        chatProgress = 15;
+        if (chatProgressValue) {
+          chatProgressValue.textContent = `${chatProgress}%`;
+        }
+        
+        // ウェルカム画面に戻る
+        welcomeScreen.style.display = 'block';
+        chatMode.style.display = 'none';
+        formMode.style.display = 'none';
+        modeSwitcher.style.display = 'none';
+      }
+      
+      // キーボードショートカット
+      document.addEventListener('keydown', function(e) {
+        // Escキーでモーダルを閉じる
+        if (e.key === 'Escape' && isModalOpen) {
+          modalClose.click();
+        }
+      });
+      
+      // 初期化
+      function init() {
+        // 文字数カウンター設定
+        setupCharacterCounters();
+        
+        // 提案クリックイベント設定
+        setupSuggestionClickHandlers();
+      }
+      
+      // アプリケーション初期化
+      init();
+    });
+  </script>
+</body>
+</html>
